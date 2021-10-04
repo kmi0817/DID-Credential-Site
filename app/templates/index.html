@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Capstone Credential</title>
+
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="//cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <script>
+        webix.ready(() => {
+            webix.ui({
+                view: "scrollview",
+                scroll: "y",
+                body: {
+                    rows: [
+                        {
+                            view: "toolbar",
+                            css: { "background": "#333333" },
+                            elements: [
+                                {
+                                    view: "button", value: "Capstone Credential", autowidth: true,
+                                    css: "webix_transparent", click: () => { location.href="/"; }
+                                },
+                                {
+                                    align: "right", body: {
+                                        cols: [
+                                            {
+                                                view: "button", value: "로그인", width: 100,
+                                                css: "webix_transparent"
+                                            },
+                                            {
+                                                view: "button", value: "회원가입", width: 100,
+                                                css: "webix_transparent"
+
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            view: "spacer", height: 30
+                        },
+                        {
+                            align: "center,middle", width: 500, height: 500,
+                            body: {
+                                cols: [
+                                    {
+                                        view: "button", value: "사용 방법", minWidth: 250, height: 300
+                                    },
+                                    { view: "spacer", minWidth: 100 },
+                                    {
+                                        view: "button", value: "증명서 발급", minWidth: 250, height: 300
+                                    },
+                                    { view: "spacer", minWidth: 100 },
+                                    {
+                                        view: "button", value: "채팅 시작하기", minWidth: 250, height: 300
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>
