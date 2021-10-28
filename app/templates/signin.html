@@ -30,12 +30,11 @@
                                         cols: [
                                             {
                                                 view: "button", value: "로그인", width: 100,
-                                                css: "webix_transparent"
+                                                css: "webix_transparent", click: () => { location.href="/signin"; }
                                             },
                                             {
                                                 view: "button", value: "회원가입", width: 100,
-                                                css: "webix_transparent"
-
+                                                css: "webix_transparent", click: () => { location.href="/signup"; }
                                             }
                                         ]
                                     }

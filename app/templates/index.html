@@ -34,7 +34,7 @@
                                             },
                                             {
                                                 view: "button", value: "회원가입", width: 100,
-                                                css: "webix_transparent"
+                                                css: "webix_transparent", click: () => { location.href="/signup"; }
 
                                             }
                                         ]
@@ -50,16 +50,23 @@
                             body: {
                                 cols: [
                                     {
-                                        view: "button", value: "사용 방법", minWidth: 250, height: 300
+                                        view: "button", value: "사용 방법", borderless: false,
+                                        minWidth: 250, height: 300,
+                                        click: () => { location.href="/tutorials"}
                                     },
                                     { view: "spacer", minWidth: 100 },
                                     {
-                                        view: "button", value: "증명서 발급", minWidth: 250, height: 300,
+                                        view: "button", value: "증명서 발급", borderless: false,
+                                        minWidth: 250, height: 300,
                                         click: () => { location.href="/credential"; }
                                     },
                                     { view: "spacer", minWidth: 100 },
                                     {
-                                        view: "button", value: "채팅 시작하기", minWidth: 250, height: 300
+                                        view: "button", value: "채팅 시작하기", borderless: false,
+                                        minWidth: 250, height: 300,
+                                        click: () => {
+                                            alert("채팅할 상대ID 입력하세요");
+                                        }
                                     }
                                 ]
                             }

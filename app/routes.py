@@ -10,6 +10,14 @@ def index():
 def singin() :
     return render_template('signin.html')
 
+@app.route('/signup')
+def singup() :
+    return render_template('signup.html')
+
+@app.route('/tutorials')
+def tutorials() :
+    return render_template('tutorial.html')
+
 @app.route('/credential')
 def credential() :
     return render_template('credential.html')

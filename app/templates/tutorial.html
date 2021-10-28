@@ -46,37 +46,15 @@
                             view: "spacer", height: 30
                         },
                         {
-                            align: "center", width: 500, height: 500,
+                            align: "center",
                             body: {
-                                view: "form", id: "signin_form",
-                                width: 500,
-                                elements: [
-                                    {
-                                        view: "radio", name: "credential", label: "Credentials", vertical: true,
-                                        options: [
-                                            {id: 1, value: "default cred 1"},
-                                            {id: 2, value: "default cred 2"},
-                                            {id: 3, value: "default cred 3"},
-                                            {id: 4, value: "credential 제작"},
-                                        ]
-                                    },
-                                    {
-                                        view: "textarea", placeholder: "default credential 양식 or credential 제작",
-                                        minHeight: 250,
-                                    },
-                                    {
-                                        view: "text", label: "갑",
-                                    },
-                                    {
-                                        view: "text", label: "을",
-                                    },
-                                    {
-                                        view: "text", label: "거래 금액"
-                                    },
-                                    {
-                                        view: "button", value: "전송"
-                                    }
-                                ]
+                                width: 500, height: 500,
+                                template: `
+                                <h3>안내 페이지</h3>
+                                <div>
+                                    안내글
+                                </div>
+                                `
                             }
                         }
                     ]
