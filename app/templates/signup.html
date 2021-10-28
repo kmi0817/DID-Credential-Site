@@ -23,48 +23,96 @@
                             elements: [
                                 {
                                     view: "button", value: "Capstone Credential", autowidth: true,
-                                    css: "webix_transparent", click: () => { location.href="/"; }
+                                    css: "webix_transparent", click: () => { location.href = "/"; }
                                 },
                                 {
                                     align: "right", body: {
                                         cols: [
                                             {
-                                                view: "button", value: "로그인", width: 100,
-                                                css: "webix_transparent", click: () => { location.href="/signin"; }
+                                                view: "button", value: "안내 페이지", width: 110,
+                                                css: "webix_transparent", click: () => { location.href = "/tutorials"; }
                                             },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "초대", width: 100,
+                                                css: "webix_transparent", click: () => { alert("초대장 발급/수락"); }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "증명서 발급", width: 110,
+                                                css: "webix_transparent", click: () => { location.href = "/credential"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "마이 페이지", width: 110,
+                                                css: "webix_transparent", click: () => { location.href = "/mypage"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "로그인", width: 100,
+                                                css: "webix_primary", click: () => { location.href = "/signin"; }
+                                            },
+                                            { view: "spacer", width: 10 },
                                             {
                                                 view: "button", value: "회원가입", width: 100,
-                                                css: "webix_transparent", click: () => { location.href="/signup"; }
-
-                                            }
+                                                css: "webix_primary", click: () => { location.href = "/signup"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "로그아웃", width: 100,
+                                                css: "webix_primary", click: () => { alert("로그아웃"); }
+                                            },
+                                            { view: "spacer", width: 10 }
                                         ]
                                     }
                                 }
                             ]
                         },
-                        {
-                            view: "spacer", height: 30
-                        },
+                        // {
+                        //     view: "spacer", height: 30
+                        // },
                         {
                             align: "center", width: 500, height: 500,
                             body: {
-                                view: "form", id: "signup_form",
-                                width: 500,
-                                elements: [
+                                width: 500, rows: [
                                     {
-                                        template: "<h4>회원가입</h4>", autowidth: true, autoheight: true
+                                        template: "<h1>회원가입</h1>", borderless: true,
+                                        autowidth: true, autoheight: true
                                     },
                                     {
-                                        view: "text", label: "ID", name: "id",
-                                    },
-                                    {
-                                        view: "text", type: "password", label: "Password", name: "passowrd",
-                                    },
-                                    {
-                                        view: "button", value: "submit"
+                                        view: "form", id: "signup_form",
+                                        elements: [
+                                            {
+                                                view: "text", label: "아이디", name: "id",
+                                                invalidMessage: "아이디를 입력하십시오."
+                                            },
+                                            {
+                                                view: "text", type: "password", label: "비밀번호", name: "passowrd",
+                                                invalidMessage: "비밀번호를 입력하십시오."
+                                            },
+                                            {
+                                                view: "button", value: "완료", hotkey: "enter",
+                                                click: () => {
+                                                    alert("HI");
+                                                    var form = $$("signup_form");
+                                                    if (form.validate()) {
+                                                        var values = form.getValues();
+
+                                                        alert(JSON.stringify(values));
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        rules: {
+                                            "id": webix.rules.isNotEmpty,
+                                            "password": webix.rules.isNotEmpty
+                                        }
                                     }
                                 ]
                             }
+                        },
+                        {
+                            view: "spacer", height: 30
                         }
                     ]
                 }

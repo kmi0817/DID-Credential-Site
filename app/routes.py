@@ -6,6 +6,9 @@ from flask import render_template, redirect, url_for, session, request
 def index():
     return render_template('index.html')
 
+@app.route('/mypage')
+def mypage() :
+    return render_template('mypage.html')
 @app.route('/signin')
 def singin() :
     return render_template('signin.html')

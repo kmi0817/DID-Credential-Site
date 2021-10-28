@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Capstone Credential</title>
+
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="//cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <script>
+        webix.ready(() => {
+            webix.ui({
+                view: "scrollview",
+                scroll: "y",
+                body: {
+                    rows: [
+                        {
+                            view: "toolbar",
+                            css: { "background": "#333333" },
+                            elements: [
+                                {
+                                    view: "button", value: "Capstone Credential", autowidth: true,
+                                    css: "webix_transparent", click: () => { location.href = "/"; }
+                                },
+                                {
+                                    align: "right", body: {
+                                        cols: [
+                                            {
+                                                view: "button", value: "안내 페이지", width: 110,
+                                                css: "webix_transparent", click: () => { location.href = "/tutorials"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "초대", width: 100,
+                                                css: "webix_transparent", click: () => { alert("초대장 발급/수락"); }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "증명서 발급", width: 110,
+                                                css: "webix_transparent", click: () => { location.href = "/credential"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "마이 페이지", width: 110,
+                                                css: "webix_transparent", click: () => { location.href = "/mypage"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "로그인", width: 100,
+                                                css: "webix_primary", click: () => { location.href = "/signin"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "회원가입", width: 100,
+                                                css: "webix_primary", click: () => { location.href = "/signup"; }
+                                            },
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "로그아웃", width: 100,
+                                                css: "webix_primary", click: () => { alert("로그아웃"); }
+                                            },
+                                            { view: "spacer", width: 10 }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            view: "spacer", height: 30
+                        },
+                        {
+                            align: "center",
+                            body: {
+                                width: 800, rows: [
+                                    {
+                                        template: "<h1>My Page</h1>", borderless: true,
+                                        autowidth: true, autoheight: true
+                                    },
+                                    {
+                                        view: "spacer", height: 5
+                                    },
+                                    {
+                                        cols: [
+                                            {
+                                                width: 200, rows: [
+                                                    {
+                                                        view: "button", value: "내 정보", width: 200, height: 50,
+                                                        css: "webix_primary", click: () => { location.href = "/mypage"; }
+                                                    },
+                                                    { view: "spacer", height: 10 },
+                                                    {
+                                                        view: "button", value: "글/댓글 관리", width: 200, height: 50,
+                                                        click: () => { alert("관리 페이지"); }
+                                                    },
+                                                    { view: "spacer", height: 10 },
+                                                    {
+                                                        view: "button", value: "비밀번호 변경", width: 200, height: 50,
+                                                        click: () => { alert("비밀번호 변경"); }
+                                                    },
+                                                    { view: "spacer", height: 10 },
+                                                    {
+                                                        view: "button", value: "회원 탈퇴", width: 200, height: 50,
+                                                        click: () => { alert("회원 탈퇴"); }
+                                                    },
+                                                ]
+                                            },
+                                            {
+                                                view: "spacer", width: 30,
+                                            },
+                                            {
+                                                align: "center", width: 570, autoheight: true,
+                                                css: { "background": "#f4f5f9" },
+                                                body: {
+                                                    width: 500, css: { "background": "#f4f5f9" },
+                                                    rows: [
+                                                        {
+                                                            view: "spacer", height: 30
+                                                        },
+                                                        {
+                                                            view: "align", align: "center", body: {
+                                                                view: "button", type: "image", autowidth: true,
+                                                                image: "../static/copyright-g093df1ebf_640.png",
+                                                                label: "User Name"
+                                                            }
+                                                        },
+                                                        {
+                                                            view: "spacer", height: 20
+                                                        },
+                                                        {
+                                                            css: { "background": "#f4f5f9" }, cols: [
+                                                                {
+                                                                    view: "text", id: "identity_id", label: "식별ID", readonly: true,
+                                                                    value: "IZudifowai29sZLIIspf932ssasdadasdasdldk"
+                                                                },
+                                                                {
+                                                                    view: "button", value: "Copy", autowidth: true,
+                                                                    css: "webix_primary",
+                                                                    click: () => {
+                                                                        var values = $$("identity_id").getValue();
+                                                                        alert("식별ID <" + values + "> copy\n아직 안 됨ㅎ");
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            view: "spacer", height: 20
+                                                        },
+                                                        {
+                                                            view: "textarea", label: "개인정보", labelPosition: "top",
+                                                            height: "300", scroll: "y"
+                                                        },
+                                                        {
+                                                            view: "spacer", height: 30
+                                                        },
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            view: "spacer", height: 30
+                        }
+                    ]
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>
