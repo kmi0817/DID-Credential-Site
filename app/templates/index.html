@@ -72,30 +72,41 @@
                             view: "spacer", height: 30
                         },
                         {
-                            align: "center,middle",
+                            align: "center",
                             body: {
-                                cols: [
+                                width: 800, rows: [
                                     {
-                                        view: "button", value: "사용 방법", borderless: false,
-                                        minWidth: 250, height: 300,
-                                        click: () => { location.href = "/tutorials" }
+                                        template: "<h1>Capstone Credential</h1>", borderless: true,
+                                        autowidth: true, autoheight: true
                                     },
-                                    { view: "spacer", minWidth: 100 },
                                     {
-                                        view: "button", value: "증명서 발급", borderless: false,
-                                        minWidth: 250, height: 300,
-                                        click: () => { location.href = "/credential"; }
+                                        view: "spacer", height: 20
                                     },
-                                    { view: "spacer", minWidth: 100 },
                                     {
-                                        view: "button", value: "채팅 시작하기", borderless: false,
-                                        minWidth: 250, height: 300,
-                                        click: () => {
-                                            alert("채팅할 상대ID 입력하세요");
-                                        }
+                                        cols: [
+                                            {
+                                                view: "button", value: "사용 방법", borderless: false,
+                                                minWidth: 250, height: 300,
+                                                click: () => { location.href = "/tutorials" }
+                                            },
+                                            { view: "spacer", minWidth: 100 },
+                                            {
+                                                view: "button", value: "증명서 발급", borderless: false,
+                                                minWidth: 250, height: 300,
+                                                click: () => { location.href = "/credential"; }
+                                            },
+                                            { view: "spacer", minWidth: 100 },
+                                            {
+                                                view: "button", value: "채팅 시작하기", borderless: false,
+                                                minWidth: 250, height: 300,
+                                                click: () => {
+                                                    alert("채팅할 상대ID 입력하세요");
+                                                }
+                                            }
+                                        ]
                                     }
                                 ]
-                            }
+                            },
                         },
                         {
                             view: "spacer", height: 30

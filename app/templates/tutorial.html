@@ -74,13 +74,20 @@
                         {
                             align: "center",
                             body: {
-                                width: 800, minHeight: 500,
-                                template: `
-                                <h3>안내 페이지</h3>
-                                <div>
-                                    안내글
-                                </div>
-                                `
+                                width: 800, rows: [
+                                    {
+                                        template: "<h1>Capstone Credential 소개</h1>", borderless: true,
+                                        autowidth: true, autoheight: true
+                                    },
+                                    {
+                                        width: 800, minHeight: 400,
+                                        template: `
+                                        <div>
+                                            안내글
+                                        </div>
+                                        `
+                                    }
+                                ]
                             }
                         },
                         {
