@@ -24,3 +24,7 @@ def tutorials() :
 @app.route('/credential')
 def credential() :
     return render_template('credential.html')
+
+@app.route('/credential-issued')
+def credential_issued() :
+    return render_template('credential_issued.html')
