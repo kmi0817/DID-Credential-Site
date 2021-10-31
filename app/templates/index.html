@@ -100,7 +100,12 @@
                                                 view: "button", value: "채팅 시작하기", borderless: false,
                                                 minWidth: 250, height: 300,
                                                 click: () => {
-                                                    alert("채팅할 상대ID 입력하세요");
+                                                    var id = prompt("채팅할 상대ID 입력하세요");
+                                                    if (id) {
+                                                        location.href = "/chatting";
+                                                    } else {
+                                                        alert("입력 내용이 없습니다.");
+                                                    }
                                                 }
                                             }
                                         ]

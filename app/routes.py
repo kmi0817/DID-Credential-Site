@@ -28,3 +28,7 @@ def credential() :
 @app.route('/credential-issued')
 def credential_issued() :
     return render_template('credential_issued.html')
+
+@app.route('/chatting')
+def chatting() :
+    return render_template('chatting.html')

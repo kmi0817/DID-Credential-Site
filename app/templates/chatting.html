@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Capstone Credential</title>
+
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="//cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="//cdn.webix.com/materialdesignicons/5.8.95/css/materialdesignicons.min.css"
+        type="text/css" charset="utf-8"> <!-- for icon -->
+</head>
+
+<body>
+    <script>
+        var menu_data = [
+            {
+                id: "dashboard", icon: "mdi mdi-view-dashboard", value: "Dashboards", data: [
+                    { id: "dashboard1", value: "Dashboard 1" },
+                    { id: "dashboard2", value: "Dashboard 2" }
+                ]
+            },
+            {
+                id: "layouts", icon: "mdi mdi-view-column", value: "Layouts", data: [
+                    { id: "accordions", value: "Accordions" },
+                    { id: "portlets", value: "Portlets" }
+                ]
+            },
+            {
+                id: "tables", icon: "mdi mdi-table", value: "Data Tables", data: [
+                    { id: "tables1", value: "Datatable" },
+                    { id: "tables2", value: "TreeTable" },
+                    { id: "tables3", value: "Pivot" }
+                ]
+            },
+            {
+                id: "uis", icon: "mdi mdi-puzzle", value: "UI Components", data: [
+                    { id: "dataview", value: "DataView" },
+                    { id: "list", value: "List" },
+                    { id: "menu", value: "Menu" },
+                    { id: "tree", value: "Tree" }
+                ]
+            },
+            {
+                id: "tools", icon: "mdi mdi-calendar", value: "Tools", data: [
+                    { id: "kanban", value: "Kanban Board" },
+                    { id: "pivot", value: "Pivot Chart" },
+                    { id: "scheduler", value: "Calendar" }
+                ]
+            },
+            {
+                id: "forms", icon: "mdi mdi-pencil", value: "Forms", data: [
+                    { id: "buttons", value: "Buttons" },
+                    { id: "selects", value: "Select boxes" },
+                    { id: "inputs", value: "Inputs" }
+                ]
+            },
+            { id: "demo", icon: "mdi mdi-book", value: "Documentation" }
+        ];
+        webix.ready(() => {
+            webix.ui({
+                rows: [
+                    {
+                        view: "toolbar",
+                        css: { "background": "#333333" },
+                        elements: [
+                            {
+                                view: "button", value: "Capstone Credential", autowidth: true,
+                                css: "webix_transparent", click: () => { location.href = "/"; }
+                            },
+                            {
+                                align: "right", body: {
+                                    cols: [
+                                        {
+                                            view: "button", value: "안내 페이지", width: 110,
+                                            css: "webix_transparent", click: () => { location.href = "/tutorials"; }
+                                        },
+                                        { view: "spacer", width: 10 },
+                                        {
+                                            view: "button", value: "초대", width: 100,
+                                            css: "webix_transparent", click: () => { alert("초대장 발급/수락"); }
+                                        },
+                                        { view: "spacer", width: 10 },
+                                        {
+                                            view: "button", value: "증명서 발급", width: 110,
+                                            css: "webix_transparent", click: () => { location.href = "/credential"; }
+                                        },
+                                        { view: "spacer", width: 10 },
+                                        {
+                                            view: "button", value: "마이 페이지", width: 110,
+                                            css: "webix_transparent", click: () => { location.href = "/mypage"; }
+                                        },
+                                        { view: "spacer", width: 10 },
+                                        {
+                                            view: "button", value: "로그인", width: 100,
+                                            css: "webix_primary", click: () => { location.href = "/signin"; }
+                                        },
+                                        { view: "spacer", width: 10 },
+                                        {
+                                            view: "button", value: "회원가입", width: 100,
+                                            css: "webix_primary", click: () => { location.href = "/signup"; }
+                                        },
+                                        { view: "spacer", width: 10 },
+                                        {
+                                            view: "button", value: "로그아웃", width: 100,
+                                            css: "webix_primary", click: () => { alert("로그아웃"); }
+                                        },
+                                        { view: "spacer", width: 10 }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        cols: [
+                            {
+                                view: "list", id: "user_list", scroll: "auto",
+                                width: 200, css: { "background": "#f7f7f7" },
+                                template: "<span class='webix_icon mdi mdi-#icon#'></span> #value#",
+                                data: [
+                                    { id: 1, value: "Alice", icon: "account" },
+                                    { id: 2, value: "Charlie", icon: "cube" },
+                                    { id: 3, value: "Book seller", icon: "chart-bar" },
+                                    { id: 4, value: "Kris", icon: "database" },
+                                    { id: 5, value: "Business Partner", icon: "cogs" }
+                                ],
+                                select: true,
+                                type: {
+                                    height: 40
+                                }
+                            },
+                            {
+                                rows: [
+                                    {
+                                        view: "toolbar", height: 50, css: { "background": "#e6e6e6" },
+                                        elements: [
+                                            {
+                                                view: "button", id: "user_name",
+                                                width: 200, css: "webix_transparent"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        view: "comments",
+                                        currentUser: 2,
+                                        data: [
+                                            {
+                                                id: 1, user_id: 1, date: "2018-06-10 18:45",
+                                                text: "Let's deal with half of the points in the plan without further delays."
+                                            },
+                                            { id: 2, user_id: 2, date: "2018-06-10 19:40", text: "Yes, let's do it." }
+                                        ],
+                                        users: [
+                                            { id: 1, value: "Corvo Attano"},
+                                            { id: 2, value: "Me"}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            $$("user_list").attachEvent("onAfterSelect", () => {
+                var user = $$("user_list").getSelectedItem();
+                $$("user_name").setValue(`<span style="color: #475466; font-size: 1.3em; font-weight: bold">${user.value}</span>`);
+            })
+        });
+    </script>
+</body>
+
+</html>
