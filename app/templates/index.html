@@ -40,7 +40,10 @@
                                             { view: "spacer", width: 10 },
                                             {
                                                 view: "button", value: "증명서 발급", width: 110,
-                                                css: "webix_transparent", click: () => { location.href = "/credential"; }
+                                                css: "webix_transparent", click: () => {
+                                                    alert("증명서를 발급받으려면 초대장을 수락하셔야 합니다.");
+                                                    location.href = "/credential";
+                                                }
                                             },
                                             { view: "spacer", width: 10 },
                                             {
@@ -98,7 +101,17 @@
                                             {
                                                 view: "button", value: "증명서 발급", borderless: false,
                                                 minWidth: 250, height: 300,
-                                                click: () => { location.href = "/credential"; }
+                                                click: () => {
+                                                    var res = confirm("초대장을 발급받으셨습니까?\n초대장을 발급받아 Capstone Credential과 연결되어야 증명서 발급이 가능합니다.");
+                                                    if (res) {
+                                                        location.href = "/credential";
+                                                    } else {
+                                                        res = confirm("초대장 발급 화면으로 이동하시겠습니까?");
+                                                        if (res) {
+                                                            location.href = "/invitation";
+                                                        }
+                                                    }
+                                                }
                                             },
                                             { view: "spacer", minWidth: 100 },
                                             {
