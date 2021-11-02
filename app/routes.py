@@ -1,3 +1,4 @@
+from flask.templating import render_template_string
 from app import app
 from flask import render_template, redirect, url_for, session, request
 
@@ -29,6 +30,10 @@ def credential() :
 def credential_issued() :
     return render_template('credential_issued.html')
 
-@app.route('/chatting')
+@app.route('/chat')
 def chatting() :
-    return render_template('chatting.html')
+    return render_template('chat.html')
+
+@app.route('/invitation')
+def invitation() :
+    return render_template('invitation.html')
