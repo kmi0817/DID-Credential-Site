@@ -14,7 +14,7 @@
         webix.ready(() => {
             webix.ui({
                 view: "scrollview",
-                scroll: "y",
+                scroll: "auto",
                 body: {
                     rows: [
                         {
@@ -43,6 +43,11 @@
                                                 css: "webix_transparent", click: () => { location.href = "/credential"; }
                                             },
                                             { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "채팅", width: 100,
+                                                css: "webix_transparent", click: () => { location.href = "/chat"; }
+                                            },
+                                            { view: "spacer", width: 10},
                                             {
                                                 view: "button", value: "마이 페이지", width: 110,
                                                 css: "webix_transparent", click: () => { location.href = "/mypage"; }
@@ -102,7 +107,7 @@
                                                 click: () => {
                                                     var id = prompt("채팅할 상대ID 입력하세요");
                                                     if (id) {
-                                                        location.href = "/chatting";
+                                                        location.href = "/chat";
                                                     } else {
                                                         alert("입력 내용이 없습니다.");
                                                     }
