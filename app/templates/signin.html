@@ -13,6 +13,36 @@
     <script>
         webix.ready(() => {
             webix.ui({
+                view: "popup", id: "findPassword",
+                width: 400, top:200, left: 300,
+                body: {
+                    rows: [
+                        {
+                            template: "<h2>비밀번호 찾기</h2>",
+                            autowidth: true, autoheight: true
+                        },
+                        {
+                            view: "form", id: "findPassword_form",
+                            elements: [
+                                {
+                                    view: "text", label: "아이디", name: "target_id",
+                                    invalidMessage: "아이디를 입력하십시오."
+                                },
+                                { view: "spacer", height: 10 },
+                                {
+                                    view: "button", value: "비밀번호 찾기", hotkey: "enter",
+                                    click: () => {
+                                        var id = $$("findPassword_form").getValues().target_id;
+                                        alert("입력 id: " + id);
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            });
+
+            webix.ui({
                 view: "scrollview",
                 scroll: "auto",
                 body: {
@@ -111,6 +141,12 @@
                                             {
                                                 template: `<a href="">비밀번호를 잊으셨습니까?</a>`,
                                                 autowidth: true, autoheight: true, borderless: true
+                                            },
+                                            {
+                                                view: "button", value: "비밀번호를 잊으셨습니까?",
+                                                autowidth: true, click: () => {
+                                                    $$("findPassword").show(this.$view);
+                                                }
                                             }
                                         ],
                                         rules: {
