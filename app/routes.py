@@ -33,7 +33,3 @@ def credential_issued() :
 @app.route('/chat')
 def chatting() :
     return render_template('chat.html')
-
-@app.route('/invitation')
-def invitation() :
-    return render_template('invitation.html')
