@@ -40,18 +40,11 @@ def credential_process() :
         conn_id = create_res.json()['connection_id'] # connection id만 꺼내오기
 
         with requests.post("http://0.0.0.0:8031/connections/receive-invitation", json=invitation) as receive_res :
-            # cred_preview = {
-            #     "@type": "https://didcomm.org/issue-credential/2.0/credential-preview",
-            #     "attributes": [
-            #         {"name": n, "value": v}
-            #         for (n, v) in cred_attrs.items()
-            #     ]
-            # }
-
+            print(receive_res.json())
             offer_request = {
                 "connection_id": conn_id,
                 "comment": f"Offer on cred def id {cred_def_id}",
-                "auto_remove": False,
+                "auto_remove": "false",
                 "credential_preview": {
                     "@type": "https://didcomm.org/issue-credential/2.0/credential-preview",
                     "attributes": [
@@ -60,13 +53,14 @@ def credential_process() :
                     ]
                 },
                 "filter": {"indy": {"cred_def_id": cred_def_id}},
-                "trace": False
+                "trace": "false"
             }
 
             with requests.post('http://0.0.0.0:8021/issue-credential-2.0/send-offer', json=offer_request) as offer_res :
-                print(offer_res)
+                print("sented")
+            #     result = json.loads(offer_res.text)
 
-    return 'gu'
+    return offer_request
 
 @app.route('/credential-issued')
 def credential_issued() :
