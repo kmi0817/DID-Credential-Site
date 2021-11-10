@@ -2,6 +2,7 @@ from app import app
 from time import time
 from flask import render_template, redirect, url_for, session, request, json, jsonify
 import requests
+import os
 
 
 @app.route('/')
@@ -36,12 +37,17 @@ def credential_process() :
 
     ## 발급기관(faber)와 플라스크 서버(alice) 간 연결 ##
     with requests.post("http://0.0.0.0:8021/connections/create-invitation") as create_res :
+        print("faber: create-invitation OK")
         invitation = create_res.json()['invitation'] # invitation 부분만 꺼내오기
         conn_id = create_res.json()['connection_id'] # connection id만 꺼내오기
 
         with requests.post("http://0.0.0.0:8031/connections/receive-invitation", json=invitation) as receive_res :
-            print(receive_res.json())
-            offer_request = {
+            print("alice: receive-invitation OK")
+
+            current = os.getcwd() # 현재 working directory 경로 가져오기
+            Woffer_request = os.path.join(current, 'app', 'static', 'offer_request.json')
+            file1 = open(Woffer_request, 'w')
+            offer_request_body = {
                 "connection_id": conn_id,
                 "comment": f"Offer on cred def id {cred_def_id}",
                 "auto_remove": "false",
@@ -55,12 +61,20 @@ def credential_process() :
                 "filter": {"indy": {"cred_def_id": cred_def_id}},
                 "trace": "false"
             }
+            file1.write(str(offer_request_body))
+            file1.close()
 
-            with requests.post('http://0.0.0.0:8021/issue-credential-2.0/send-offer', json=offer_request) as offer_res :
-                print("sented")
+            file2 = open(Woffer_request, 'r')
+            Roffer_request = file2.read()
+            file2.close()
+
+            with requests.post('http://0.0.0.0:8021/issue-credential-2.0/send-offer', json=Roffer_request) as offer_res :
+                print("faber: issue-credential OK")
+                result = json.loads(offer_res.text)
+                print(result)
             #     result = json.loads(offer_res.text)
 
-    return offer_request
+    return result
 
 @app.route('/credential-issued')
 def credential_issued() :
@@ -71,6 +85,35 @@ def chatting() :
     return render_template('chat.html')
 
 
+## 발급기관(faber)와 플라스크 서버(alice) 간 연결 ##
+@app.route('/create-connection', methods=['POST'])
+def create_connection() :
+    with requests.post("http://0.0.0.0:8021/connections/create-invitation") as create_res :
+        print("faber: create-invitation OK")
+        invitation = create_res.json()['invitation'] # invitation 부분만 꺼내오기
+        conn_id = create_res.json()['connection_id'] # connection id만 꺼내오기
+
+        with requests.post("http://0.0.0.0:8031/connections/receive-invitation", json=invitation) as receive_res :
+            my_did = receive_res.json()['my_did']
+
+    ret = {
+        "conn_id": conn_id,
+        "my_did": my_did
+    }
+    return ret
+
+@app.route('/create-schema', methods=['POST'])
+def create_schema() :
+    current = os.getcwd() # 현재 working directory 경로 가져오기
+    schema = os.path.join(current, 'app', 'static', 'cashtransaction_schema.json')
+    with open(schema, 'r') as f :
+        schema_body = f.read()
+        print(schema_body)
+        with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
+            print(schema_res.json())
+            # schema_id = schema_res.json()['schema_id']
+            # print(schema_id)
+    return 'hi'
 
 # # schema 등록
 # @app.route('/register/cash-transaction', methods=['POST'])
