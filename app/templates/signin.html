@@ -129,7 +129,11 @@
                                                     if (form.validate()) {
                                                         var values = form.getValues();
 
-                                                        alert(JSON.stringify(values));
+                                                        // webix.ajax().post("/signin-process", values)
+                                                        //     .then((res) => {
+                                                        //         location.href="/";
+                                                        //     })
+                                                        //     .fail(() => { alert("로그인 과정에 문가 발생했습니다."); });
                                                     }
                                                 }
                                             },
