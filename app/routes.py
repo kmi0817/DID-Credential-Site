@@ -122,53 +122,28 @@ def delete_connection() :
 
 @app.route('/create-schema', methods=['POST'])
 def create_schema() :
-    current = os.getcwd() # 현재 working directory 경로 가져오기
-    schema = os.path.join(current, 'app', 'static', 'cashtransaction_schema.json')
-    with open(schema, 'r') as f :
-        schema_body = f.read()
-        print(schema_body)
-        with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
-            print(schema_res.json())
-            # schema_id = schema_res.json()['schema_id']
-            # print(schema_id)
-    return 'hi'
+        # credential_body = literal_eval(credential_body) # str -> dict
+        # credential_body = json.dumps(credential_body, indent=4) # dict -> JSON 문자열
+    schema_body = {
+        "schema_name": "cash transaction schema",
+        "schema_version": "32.21.70",
+        "attributes": ["creditor", "debtor", "amount","debt_term",
+        "CapstoneCredential_no","approved_date", "timestamp"]
+    }
+    with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
+        session['schema_id'] = schema_res.json()['schema_id']
+        print(schema_res.json()['schema_id'])
+    return schema_res.json()
 
-# # schema 등록
-# @app.route('/register/cash-transaction', methods=['POST'])
-# def register_cash_transaction() :
-#     schema_body = {
-#         "schema_name": "cash transaction schema",
-#         "schema_version": "01",
-#         "attributes": ["creditor","debtor", "amount",
-#         "debt_term", "CapstoneCredential_no","approved_date", "timestamp"],
-#     }
-
-#     with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
-#         schema_id = schema_res.json()['schema_id']
-#         print("schema_id: " + schema_id)
-#         credential_definition_body = {
-#             "schema_id": schema_id,
-#             "support_revocation": False,
-#             "revocation_registry_size": 100,
-#         }
-
-#         with requests.post('http://0.0.0.0:8021/credential-definitions', json=credential_definition_body) as creddef_res :
-#             credential_definition_id = creddef_res.json()['credential_definition_id']
-#             print("credential_definition_id: " + credential_definition_id)
-
-#     return "cash tranaction format registered"
-
-# @app.route("/register/schema", methods=['POST'])
-# def schema() :
-#     schema_body = {
-#         "schema_name": "cash transaction schema",
-#         "schema_version": "01",
-#         "attributes": ["creditor","debtor", "amount",
-#         "debt_term", "CapstoneCredential_no","approved_date", "timestamp"],
-#     }
-
-#     with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
-#         schema_id = schema_res.json()['schema_id']
-#         print("schema_id: " + schema_id)
-#     return 'schema registered'
-
+@app.route('/create-cred-def', methods=['POST'])
+def created_cred_def() :
+    schema_id = session['schema_id']
+    credential_definition_body = {
+        "schema_id": schema_id,
+        "support_revocation": False,
+        "revocation_registry_size": 100,
+    }
+    with requests.post('http://0.0.0.0:8021/credential-definitions', json=credential_definition_body) as creddef_res :
+        print(creddef_res.json())
+        session['credential_definition_id'] = creddef_res.json()['credential_definition_id']
+    return creddef_res.json()
