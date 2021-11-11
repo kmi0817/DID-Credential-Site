@@ -1,6 +1,0 @@
-{
-    "schema_name": "cash transaction schema",
-    "schema_version": "32.21.70",
-    "attributes": ["creditor", "debtor", "amount","debt_term",
-    "CapstoneCredential_no","approved_date", "timestamp"]
-}
