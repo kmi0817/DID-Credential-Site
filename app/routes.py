@@ -3,6 +3,7 @@ from time import time
 from flask import render_template, redirect, url_for, session, request, json, jsonify
 import requests
 import os
+from ast import literal_eval # 보안 상의 이유로 eval 대신 더 안전한 literal_eval 사용
 
 
 @app.route('/')
@@ -65,8 +66,8 @@ def credential_process() :
         working_directory = os.getcwd() # 현재 working directory 경로 가져오기
         credential_file = os.path.join(working_directory, 'app', 'static', 'credential_file', cred_ex_id) # 경로 병합해 새 경로 생성
 
-        with open(credential_file, 'w') as credential :
-            credential.write(str(result))
+        with open(credential_file, 'w') as f :
+            f.write(str(result))
 
     return cred_ex_id
 
@@ -75,8 +76,10 @@ def credential_cred_ex_id(cred_ex_id) :
     working_directory = os.getcwd() # 현재 working directory 경로 가져오기
     credential_file = os.path.join(working_directory, 'app', 'static', 'credential_file', cred_ex_id) # 경로 병합해 새 경로 생성
 
-    with open(credential_file, 'r') as credential :
-        credential_body = credential.read()
+    with open(credential_file, 'r') as f :
+        credential_body = f.read().replace("'", '"') # 파일 내용 가져오기 (str)
+        credential_body = literal_eval(credential_body) # str -> dict
+        credential_body = json.dumps(credential_body, indent=4) # dict -> JSON 문자열
     return render_template('credential_issued.html', cred_ex_id=cred_ex_id, credential_body=credential_body)
 
 @app.route('/chat')
