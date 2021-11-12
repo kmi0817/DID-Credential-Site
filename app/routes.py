@@ -5,6 +5,10 @@ import requests
 import os
 from ast import literal_eval # 보안 상의 이유로 eval 대신 더 안전한 literal_eval 사용
 
+curr_path = os.getcwd() # 현재 working directory 경로 가져오기
+path = os.path.join(curr_path, 'app', 'static') # 경로 병합해 새 경로 생성
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -63,21 +67,18 @@ def credential_process() :
         result = offer_res.json()
         cred_ex_id = result['cred_ex_id']
 
-        working_directory = os.getcwd() # 현재 working directory 경로 가져오기
-        credential_file = os.path.join(working_directory, 'app', 'static', 'credential_file', cred_ex_id) # 경로 병합해 새 경로 생성
-
+        credential_file = os.path.join(path, 'credential_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
         with open(credential_file, 'w') as f :
-            f.write(str(result))
+            f.write(str(result).replace("'", '"'))
 
     return cred_ex_id
 
 @app.route('/credential/<cred_ex_id>')
 def credential_cred_ex_id(cred_ex_id) :
-    working_directory = os.getcwd() # 현재 working directory 경로 가져오기
-    credential_file = os.path.join(working_directory, 'app', 'static', 'credential_file', cred_ex_id) # 경로 병합해 새 경로 생성
+    credential_file = os.path.join(path, 'credential_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
 
     with open(credential_file, 'r') as f :
-        credential_body = f.read().replace("'", '"') # 파일 내용 가져오기 (str)
+        credential_body = f.read() # 파일 내용 가져오기 (str)
         credential_body = literal_eval(credential_body) # str -> dict
         credential_body = json.dumps(credential_body, indent=4) # dict -> JSON 문자열
     return render_template('credential_issued.html', cred_ex_id=cred_ex_id, credential_body=credential_body)
@@ -145,3 +146,65 @@ def created_cred_def(type) :
         print('제작 예정')
 
     return creddef_res.json()
+
+@app.route('/credential-to-datatable', methods=['POST'])
+def credential_to_datatable() :
+    credential = request.get_json(force=True)
+    created_at = credential['created_at']
+    cred_ex_id = credential['cred_ex_id']
+
+    cred_proposal = credential['cred_proposal']
+    cred_proposal_id = cred_proposal['@id']
+    cred_proposal_type = cred_proposal['@type']
+
+    attributes = cred_proposal['credential_preview']['attributes']
+
+    datatable_data = [
+        {
+            "id": 1,
+            "key": "created_at",
+            "value": created_at
+        },
+        {
+            "id": 2,
+            "key": "cred_ex_id",
+            "value": cred_ex_id
+        },
+        {
+            "id": 3,
+            "key": "cred_proposal_id",
+            "value": cred_proposal_id
+        },
+        {
+            "id": 4,
+            "key": "cred_proposal_type",
+            "value": cred_proposal_type
+        }
+    ]
+
+    id = 5
+    for attr in  attributes :
+        datatable_data.append({"id": id, "key": attr["name"], "value": attr["value"]})
+        id = id + 1
+
+    session['cred_ex_id'] = cred_ex_id
+    datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
+    with open(datatable_file, 'w') as f :
+        f.write(str(datatable_data).replace("'", '"'))
+    return 'OK'
+
+@app.route('/credential-download')
+def credential_download() :
+    cred_ex_id = session['cred_ex_id']
+
+    datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
+    with open(datatable_file, 'r') as f :
+        data = f.read()
+    return render_template('credential_download.html', cred_ex_id=cred_ex_id, data=data)
+
+@app.route('/datatable-data/<cred_ex_id>')
+def datatable_data(cred_ex_id) :
+    datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
+    with open(datatable_file, 'r') as f :
+        data = f.read()
+    return data
