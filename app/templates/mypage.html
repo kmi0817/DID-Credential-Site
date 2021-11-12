@@ -139,8 +139,15 @@
                                                                     view: "button", value: "Copy", autowidth: true,
                                                                     css: "webix_primary",
                                                                     click: () => {
-                                                                        var values = $$("identity_id").getValue();
-                                                                        alert("식별ID <" + values + "> copy\n아직 안 됨ㅎ");
+                                                                        var content = $$("identity_id").getValue();
+
+                                                                        navigator.clipboard.writeText(content)
+                                                                            .then(() => {
+                                                                                alert("복사되었습니다.");
+                                                                            })
+                                                                            .catch(err => {
+                                                                                alert("COPY 실패");
+                                                                            })
                                                                     }
                                                                 }
                                                             ]
