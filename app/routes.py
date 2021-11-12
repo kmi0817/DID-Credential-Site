@@ -34,6 +34,7 @@ def credential() :
         with requests.get('http://0.0.0.0:8021/credential-definitions/created') as cred_def_res :
             cred_def_ids = cred_def_res.json()['credential_definition_ids']
             # print(cred_def_ids)
+    
     return render_template('credential.html', connection=conn, credential_definition_ids=cred_def_ids)
 
 @app.route('/credential-process', methods=['POST'])
@@ -120,30 +121,28 @@ def delete_connection() :
         session.pop('connection', None)
     return ret
 
-@app.route('/create-schema', methods=['POST'])
-def create_schema() :
-        # credential_body = literal_eval(credential_body) # str -> dict
-        # credential_body = json.dumps(credential_body, indent=4) # dict -> JSON 문자열
-    schema_body = {
-        "schema_name": "cash transaction schema",
-        "schema_version": "32.21.70",
-        "attributes": ["creditor", "debtor", "amount","debt_term",
-        "CapstoneCredential_no","approved_date", "timestamp"]
-    }
-    with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
-        session['schema_id'] = schema_res.json()['schema_id']
-        print(schema_res.json()['schema_id'])
-    return schema_res.json()
+@app.route('/create-cred-def/<type>', methods=['POST'])
+def created_cred_def(type) :
+    # type : 등록할 증명서 양식 종류 1) 현금거래 (cash transaction), 2) 부동산거래? 3)...
+    if type == 'cash-transaction' :
+        schema_body = {
+            "schema_name": "cash transaction schema",
+            "schema_version": "32.21.70",
+            "attributes": ["creditor", "debtor", "amount","debt_term",
+            "CapstoneCredential_no","approved_date", "timestamp"]
+        }
+        with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
+            schema_id = schema_res.json()['schema_id']
 
-@app.route('/create-cred-def', methods=['POST'])
-def created_cred_def() :
-    schema_id = session['schema_id']
-    credential_definition_body = {
-        "schema_id": schema_id,
-        "support_revocation": False,
-        "revocation_registry_size": 100,
-    }
-    with requests.post('http://0.0.0.0:8021/credential-definitions', json=credential_definition_body) as creddef_res :
-        print(creddef_res.json())
-        session['credential_definition_id'] = creddef_res.json()['credential_definition_id']
+        credential_definition_body = {
+            "schema_id": schema_id,
+            "support_revocation": False,
+            "revocation_registry_size": 100,
+        }
+        with requests.post('http://0.0.0.0:8021/credential-definitions', json=credential_definition_body) as creddef_res :
+            creddef_id = creddef_res.json()['credential_definition_id']
+        
+    elif type == '부동산...' :
+        print('제작 예정')
+
     return creddef_res.json()
