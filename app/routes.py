@@ -5,7 +5,6 @@ import requests
 import os
 from ast import literal_eval # 보안 상의 이유로 eval 대신 더 안전한 literal_eval 사용
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
