@@ -49,6 +49,13 @@
                                                 view: "button", value: "마이 페이지", width: 110,
                                                 css: "webix_transparent", click: () => { location.href = "/mypage"; }
                                             },
+                                            {% if login %}
+                                            { view: "spacer", width: 10 },
+                                            {
+                                                view: "button", value: "로그아웃", width: 100,
+                                                css: "webix_primary", click: () => { alert("로그아웃"); }
+                                            },
+                                            {% else %}
                                             { view: "spacer", width: 10 },
                                             {
                                                 view: "button", value: "로그인", width: 100,
@@ -59,11 +66,7 @@
                                                 view: "button", value: "회원가입", width: 100,
                                                 css: "webix_primary", click: () => { location.href = "/signup"; }
                                             },
-                                            { view: "spacer", width: 10 },
-                                            {
-                                                view: "button", value: "로그아웃", width: 100,
-                                                css: "webix_primary", click: () => { alert("로그아웃"); }
-                                            },
+                                            {% endif %}
                                             { view: "spacer", width: 10 }
                                         ]
                                     }

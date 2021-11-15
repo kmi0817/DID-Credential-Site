@@ -83,27 +83,37 @@
                                         view: "form", id: "signup_form",
                                         elements: [
                                             {
+                                                view: "text", label: "이름", name: "name",
+                                                invalidMessage: "이름을 입력하십시오."
+                                            },
+                                            {
                                                 view: "text", label: "아이디", name: "id",
                                                 invalidMessage: "아이디를 입력하십시오."
                                             },
                                             {
-                                                view: "text", type: "password", label: "비밀번호", name: "passowrd",
+                                                view: "text", type: "password", label: "비밀번호", name: "password",
                                                 invalidMessage: "비밀번호를 입력하십시오."
                                             },
                                             {
                                                 view: "button", value: "완료", hotkey: "enter",
                                                 click: () => {
-                                                    alert("HI");
                                                     var form = $$("signup_form");
                                                     if (form.validate()) {
                                                         var values = form.getValues();
-
-                                                        alert(JSON.stringify(values));
+                                                        webix.ajax().post("/signup", JSON.stringify(values))
+                                                            .then((res) => {
+                                                                alert("회원가입이 완료되었습니다.\n로그인 창으로 이동합니다.");
+                                                                location.href="/signin";
+                                                            })
+                                                            .fail(() => {
+                                                                webix.message("Error");
+                                                            });
                                                     }
                                                 }
                                             }
                                         ],
                                         rules: {
+                                            "name" : webix.rules.isNotEmpty,
                                             "id": webix.rules.isNotEmpty,
                                             "password": webix.rules.isNotEmpty
                                         }

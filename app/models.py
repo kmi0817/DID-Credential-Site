@@ -1,7 +1,6 @@
 from app import db
 from datetime import datetime
 
-# 
 class User(db.Model) :
     id = db.Column(db.String(30), primary_key=True)
     password = db.Column(db.String(50), nullable=False)
@@ -12,7 +11,7 @@ class User(db.Model) :
         return f'{self.name}({self.id})'
 
 # 채팅 정보
-class Chat_Info(db.Model) :
+class Chatinfo(db.Model) :
     chat_no = db.Column(db.Integer, primary_key=True) # 채팅방 번호(auto_increment)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) # 생성 날짜
     user1 = db.Column(db.String(30), db.ForeignKey('user.id', onupdate='CASCADE')) # 대표자
@@ -23,11 +22,11 @@ class Chat_Info(db.Model) :
 
 # 채팅 내용
 class Chat(db.Model) :
-    chat_no = db.Column(db.Integer, db.ForeignKey('chat_info.chat_no'), primary_key=True) # 채팅방 번호
+    chat_no = db.Column(db.Integer, db.ForeignKey('chatinfo.chat_no'), primary_key=True) # 채팅방 번호
     message_no = db.Column(db.Integer, primary_key=True) # 메시지 번호
     message_owner = db.Column(db.String(30), db.ForeignKey('user.id', onupdate='CASCADE')) # 메시지 주인
     message_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) # 메시지 날짜
-    message = db.Column(db.Txt, nullable=False)
+    message = db.Column(db.Text, nullable=False)
 
     def __repr__(self) :
         return f'{self.message_owner} sent message({self.message_no})'

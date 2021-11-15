@@ -1,10 +1,10 @@
-from app import app
+from app import app, db
 from time import time
 from flask import render_template, redirect, url_for, session, request, json, jsonify
 import requests
 import os
 from ast import literal_eval # 보안 상의 이유로 eval 대신 더 안전한 literal_eval 사용
-# from app.models import
+from app.models import User, Chatinfo, Chat
 
 curr_path = os.getcwd() # 현재 working directory 경로 가져오기
 path = os.path.join(curr_path, 'app', 'static') # 경로 병합해 새 경로 생성
@@ -12,26 +12,75 @@ path = os.path.join(curr_path, 'app', 'static') # 경로 병합해 새 경로 �
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    login = False
+    if 'login' in session :
+        login = True
+    return render_template('index.html', login=login)
 
 @app.route('/mypage')
 def mypage() :
-    return render_template('mypage.html')
+    login = False
+    if 'login' in session :
+        login = True
+    return render_template('mypage.html', login=login)
 
-@app.route('/signin')
+@app.route('/signin', methods=['GET', 'POST'])
 def singin() :
-    return render_template('signin.html')
+    login = False
+    if 'login' in session :
+        login = True
+        return '이미 로그인돼 있음 처리'
 
-@app.route('/signup')
+    if request.method == 'GET':
+        return render_template('signin.html', login=login)
+    elif request.method == 'POST' :
+        values = request.get_json(force=True)
+        id = values['id']
+        password = values['password']
+
+        member = User.query.filter(User.id == id).first()
+        if member and member.password == password :
+            # User 테이블에 존재하면서 비밀번호와 이름이 일치함
+            session['login'] = member.id
+            return 'OK'
+        else : # 그 외 (비회원이거나 비밀번호가 일치하지 않음)
+            return 'FAIL'
+
+@app.route('/signup', methods=['GET', 'POST'])
 def singup() :
-    return render_template('signup.html')
+    login = False
+    if 'login' in session :
+        login = True
+        return '이미 로그인 돼 있음 처리'
+
+    if request.method == 'GET':
+        return render_template('signup.html', login=login)
+    elif request.method == 'POST' :
+        values = request.get_json(force=True)
+        name = values['name']
+        id = values['id']
+        password = values['password']
+
+        print(f'name: {name}, id: {id}, password: {password}')
+        record = User(name=name, id=id, password=password)
+        db.session.add(record)
+        db.session.commit()
+        return 'OK'
 
 @app.route('/tutorials')
 def tutorials() :
-    return render_template('tutorial.html')
+    login = False
+    if 'login' in session :
+        login = True
+
+    return render_template('tutorial.html', login=login)
 
 @app.route('/credential')
 def credential() :
+    login = False
+    if 'login' in session :
+        login = True
+
     conn = False
     cred_def_ids = None
     if 'connection' in session :
@@ -40,7 +89,7 @@ def credential() :
             cred_def_ids = cred_def_res.json()['credential_definition_ids']
             # print(cred_def_ids)
     
-    return render_template('credential.html', connection=conn, credential_definition_ids=cred_def_ids)
+    return render_template('credential.html', login=login, connection=conn, credential_definition_ids=cred_def_ids)
 
 @app.route('/credential-process', methods=['POST'])
 def credential_process() :
@@ -77,17 +126,25 @@ def credential_process() :
 
 @app.route('/credential/<cred_ex_id>')
 def credential_cred_ex_id(cred_ex_id) :
+    login = False
+    if 'login' in session :
+        login = True
+
     credential_file = os.path.join(path, 'credential_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
 
     with open(credential_file, 'r') as f :
         credential_body = f.read() # 파일 내용 가져오기 (str)
         credential_body = literal_eval(credential_body) # str -> dict
         credential_body = json.dumps(credential_body, indent=4) # dict -> JSON 문자열
-    return render_template('credential_issued.html', cred_ex_id=cred_ex_id, credential_body=credential_body)
+    return render_template('credential_issued.html', login=login, cred_ex_id=cred_ex_id, credential_body=credential_body)
 
 @app.route('/chat')
 def chatting() :
-    return render_template('chat.html')
+    login = False
+    if 'login' in session :
+        login = True
+
+    return render_template('chat.html', login=login)
 
 
 
@@ -95,6 +152,10 @@ def chatting() :
 ## 발급기관(faber)와 플라스크 서버(alice) 간 연결 ##
 @app.route('/create-connection', methods=['POST'])
 def create_connection() :
+    login = False
+    if 'login' in session :
+        login = True
+
     with requests.post("http://0.0.0.0:8021/connections/create-invitation") as create_res :
         print("faber: create-invitation OK")
         invitation = create_res.json()['invitation'] # invitation 부분만 꺼내오기
@@ -117,6 +178,10 @@ def session_pop() :
 
 @app.route('/delete-connection', methods=['DELETE'])
 def delete_connection() :
+    login = False
+    if 'login' in session :
+        login = True
+
     conn_id = session['connection']['conn_id']
     with requests.delete(f'http://0.0.0.0:8021/connections/{conn_id}') as delete_res :
         ret = delete_res.json()
@@ -125,6 +190,10 @@ def delete_connection() :
 
 @app.route('/create-cred-def/<type>', methods=['POST'])
 def created_cred_def(type) :
+    login = False
+    if 'login' in session :
+        login = True
+
     # type : 등록할 증명서 양식 종류 1) 현금거래 (cash transaction), 2) 부동산거래? 3)...
     if type == 'cash-transaction' :
         schema_body = {
@@ -151,6 +220,10 @@ def created_cred_def(type) :
 
 @app.route('/credential-to-datatable', methods=['POST'])
 def credential_to_datatable() :
+    login = False
+    if 'login' in session :
+        login = True
+
     credential = request.get_json(force=True)
     created_at = credential['created_at']
     cred_ex_id = credential['cred_ex_id']
@@ -197,6 +270,10 @@ def credential_to_datatable() :
 
 @app.route('/credential-download')
 def credential_download() :
+    login = False
+    if 'login' in session :
+        login = True
+
     cred_ex_id = session['cred_ex_id']
 
     datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
@@ -206,6 +283,10 @@ def credential_download() :
 
 @app.route('/datatable-data/<cred_ex_id>')
 def datatable_data(cred_ex_id) :
+    login = False
+    if 'login' in session :
+        login = True
+
     datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
     with open(datatable_file, 'r') as f :
         data = f.read()

@@ -118,22 +118,27 @@
                                                 invalidMessage: "아이디를 입력하십시오."
                                             },
                                             {
-                                                view: "text", type: "password", label: "비밀번호", name: "passowrd",
+                                                view: "text", type: "password", label: "비밀번호", name: "password",
                                                 invalidMessage: "비밀번호를 입력하십시오."
                                             },
                                             {
                                                 view: "button", value: "완료", hotkey: "enter",
                                                 click: () => {
-                                                    alert("HI");
                                                     var form = $$("signin_form");
                                                     if (form.validate()) {
                                                         var values = form.getValues();
-
-                                                        // webix.ajax().post("/signin-process", values)
-                                                        //     .then((res) => {
-                                                        //         location.href="/";
-                                                        //     })
-                                                        //     .fail(() => { alert("로그인 과정에 문가 발생했습니다."); });
+                                                        webix.ajax().post("/signin", JSON.stringify(values))
+                                                        .then((res) => {
+                                                            var response = res.text();
+                                                            if (response === "OK") {
+                                                                location.href="/";
+                                                            } else {
+                                                                alert("아이디와 비밀번호를 다시 확인해주십시오.");
+                                                            }
+                                                        })
+                                                        .fail(() => {
+                                                            webix.message("Error");
+                                                        });
                                                     }
                                                 }
                                             },
