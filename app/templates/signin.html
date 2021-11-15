@@ -12,6 +12,11 @@
 <body>
     {% if login %}
     <script>
+        alert("이미 로그인되어 있습니다.");
+        history.back();
+    </script>
+    {% else %}
+    <script>
         webix.ready(() => {
             webix.ui({
                 view: "popup", id: "findPassword",
@@ -33,11 +38,19 @@
                                 {
                                     view: "button", value: "비밀번호 찾기", hotkey: "enter",
                                     click: () => {
-                                        var id = $$("findPassword_form").getValues().target_id;
-                                        alert("입력 id: " + id);
+                                        var form = $$("findPassword_form");
+                                        if (form.validate()) {
+                                            var values = form.getValues().target_id;
+                                            if (id) {
+                                                alert("입력 id: " + id);
+                                            }
+                                        }
                                     }
                                 }
-                            ]
+                            ],
+                            rules: {
+                                "target_id": webix.rules.isNotEmpty,
+                            }
                         }
                     ]
                 }
@@ -72,11 +85,6 @@
                                             {
                                                 view: "button", value: "채팅", width: 100,
                                                 css: "webix_transparent", click: () => { location.href = "/chat"; }
-                                            },
-                                            { view: "spacer", width: 10},
-                                            {
-                                                view: "button", value: "마이 페이지", width: 110,
-                                                css: "webix_transparent", click: () => { location.href = "/mypage"; }
                                             },
                                             { view: "spacer", width: 10 },
                                             {
@@ -139,11 +147,7 @@
                                                 }
                                             },
                                             {
-                                                template: `<a href="">비밀번호를 잊으셨습니까?</a>`,
-                                                autowidth: true, autoheight: true, borderless: true
-                                            },
-                                            {
-                                                view: "button", value: "비밀번호를 잊으셨습니까?",
+                                                view: "button", value: "<span style='font-size: 13px;'>비밀번호를 잊으셨습니까?</span>",
                                                 autowidth: true, click: () => {
                                                     $$("findPassword").show(this.$view);
                                                 }
@@ -165,11 +169,6 @@
             });
 
         });
-    </script>
-    {% else %}
-    <script>
-        alert("이미 로그인되어 있습니다.");
-        history.back();
     </script>
     {% endif %}
 </body>

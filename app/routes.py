@@ -26,10 +26,10 @@ def mypage() :
 
 @app.route('/signin', methods=['GET', 'POST'])
 def singin() :
-    login = False
-    if 'login' in session :
-        login = True
     if request.method == 'GET':
+        login = False
+        if 'login' in session :
+            login = True
         return render_template('signin.html', login=login)
 
     elif request.method == 'POST' :
@@ -47,12 +47,12 @@ def singin() :
 
 @app.route('/signup', methods=['GET', 'POST'])
 def singup() :
-    login = False
-    if 'login' in session :
-        login = True
     if request.method == 'GET':
+        login = False
+        if 'login' in session :
+            login = True
         return render_template('signup.html', login=login)
-        
+
     elif request.method == 'POST' :
         values = request.get_json(force=True)
         name = values['name']
@@ -65,10 +65,16 @@ def singup() :
         db.session.commit()
         return 'OK'
 
-@app.route('/singout', methods=['DELETE'])
+@app.route('/signout', methods=['DELETE'])
 def signout() :
-    session.pop()
+    session.clear()
 
+    if 'connection' in session :
+        conn_id = session['connection']['conn_id']
+        with requests.delete(f'http://0.0.0.0:8021/connections/{conn_id}') as del_res :
+            print(del_res.json())
+    return 'OK'
+    
 @app.route('/tutorials')
 def tutorials() :
     login = False
