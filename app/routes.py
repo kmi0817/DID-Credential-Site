@@ -4,6 +4,7 @@ from flask import render_template, redirect, url_for, session, request, json, js
 import requests
 import os
 from ast import literal_eval # 보안 상의 이유로 eval 대신 더 안전한 literal_eval 사용
+# from app.models import
 
 curr_path = os.getcwd() # 현재 working directory 경로 가져오기
 path = os.path.join(curr_path, 'app', 'static') # 경로 병합해 새 경로 생성
@@ -16,6 +17,7 @@ def index():
 @app.route('/mypage')
 def mypage() :
     return render_template('mypage.html')
+
 @app.route('/signin')
 def singin() :
     return render_template('signin.html')
