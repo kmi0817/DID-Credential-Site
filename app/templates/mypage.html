@@ -131,7 +131,7 @@
                                                             view: "align", align: "center", body: {
                                                                 view: "button", type: "image", autowidth: true,
                                                                 image: "../static/copyright-g093df1ebf_640.png",
-                                                                label: "User Name"
+                                                                label: `{{name}}`
                                                             }
                                                         },
                                                         {
@@ -140,8 +140,8 @@
                                                         {
                                                             css: { "background": "#f4f5f9" }, cols: [
                                                                 {
-                                                                    view: "text", id: "identity_id", label: "식별ID", readonly: true,
-                                                                    value: "IZudifowai29sZLIIspf932ssasdadasdasdldk"
+                                                                    view: "text", id: "identity_id", label: "ID", readonly: true,
+                                                                    value: `{{id}}`
                                                                 },
                                                                 {
                                                                     view: "button", value: "Copy", autowidth: true,

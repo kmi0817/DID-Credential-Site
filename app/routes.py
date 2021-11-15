@@ -22,7 +22,13 @@ def mypage() :
     login = False
     if 'login' in session :
         login = True
-    return render_template('mypage.html', login=login)
+        id = session['login']
+
+        member = User.query.filter(User.id == id).first()
+        name = member.name
+        return render_template('mypage.html', login=login, name=name, id=id)
+    else :
+        return render_template('mypage.html', login=login)
 
 @app.route('/signin', methods=['GET', 'POST'])
 def singin() :
