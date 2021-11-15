@@ -94,7 +94,11 @@
                                         { view: "spacer", width: 10 },
                                         {
                                             view: "button", value: "로그아웃", width: 100,
-                                            css: "webix_primary", click: () => { alert("로그아웃"); }
+                                            css: "webix_primary", click: () => {
+                                                webix.ajax().del("/singout")
+                                                .then((res) => { location.href="/"; })
+                                                .fail(() => { alert("로그아웃 과정 중 문제가 발생했습니다."); });
+                                            }
                                         },
                                         {% else %}
                                         { view: "spacer", width: 10 },

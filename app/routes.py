@@ -29,10 +29,9 @@ def singin() :
     login = False
     if 'login' in session :
         login = True
-        return '이미 로그인돼 있음 처리'
-
     if request.method == 'GET':
         return render_template('signin.html', login=login)
+
     elif request.method == 'POST' :
         values = request.get_json(force=True)
         id = values['id']
@@ -51,10 +50,9 @@ def singup() :
     login = False
     if 'login' in session :
         login = True
-        return '이미 로그인 돼 있음 처리'
-
     if request.method == 'GET':
         return render_template('signup.html', login=login)
+        
     elif request.method == 'POST' :
         values = request.get_json(force=True)
         name = values['name']
@@ -66,6 +64,10 @@ def singup() :
         db.session.add(record)
         db.session.commit()
         return 'OK'
+
+@app.route('/singout', methods=['DELETE'])
+def signout() :
+    session.pop()
 
 @app.route('/tutorials')
 def tutorials() :
@@ -279,7 +281,7 @@ def credential_download() :
     datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
     with open(datatable_file, 'r') as f :
         data = f.read()
-    return render_template('credential_download.html', cred_ex_id=cred_ex_id, data=data)
+    return render_template('credential_download.html', login=login, cred_ex_id=cred_ex_id, data=data)
 
 @app.route('/datatable-data/<cred_ex_id>')
 def datatable_data(cred_ex_id) :

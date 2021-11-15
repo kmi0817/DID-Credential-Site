@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    {% if login %}
     <script>
         webix.ready(() => {
             webix.ui({
@@ -87,11 +88,6 @@
                                                 view: "button", value: "회원가입", width: 100,
                                                 css: "webix_primary", click: () => { location.href = "/signup"; }
                                             },
-                                            { view: "spacer", width: 10 },
-                                            {
-                                                view: "button", value: "로그아웃", width: 100,
-                                                css: "webix_primary", click: () => { alert("로그아웃"); }
-                                            },
                                             { view: "spacer", width: 10 }
                                         ]
                                     }
@@ -137,7 +133,7 @@
                                                             }
                                                         })
                                                         .fail(() => {
-                                                            webix.message("Error");
+                                                            webix.message("로그인 과정 중 문제가 발생했습니다.");
                                                         });
                                                     }
                                                 }
@@ -170,6 +166,12 @@
 
         });
     </script>
+    {% else %}
+    <script>
+        alert("이미 로그인되어 있습니다.");
+        history.back();
+    </script>
+    {% endif %}
 </body>
 
 </html>

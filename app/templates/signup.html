@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    {% if login %}
     <script>
         webix.ready(() => {
             webix.ui({
@@ -56,11 +57,6 @@
                                             {
                                                 view: "button", value: "회원가입", width: 100,
                                                 css: "webix_primary", click: () => { location.href = "/signup"; }
-                                            },
-                                            { view: "spacer", width: 10 },
-                                            {
-                                                view: "button", value: "로그아웃", width: 100,
-                                                css: "webix_primary", click: () => { alert("로그아웃"); }
                                             },
                                             { view: "spacer", width: 10 }
                                         ]
@@ -130,6 +126,12 @@
 
         });
     </script>
+    {% else %}
+    <script>
+        alert("이미 회원이십니다.\n로그아웃 후 회원가입을 진행해주세요.");
+        history.back();
+    </script>
+    {% endif %}
 </body>
 
 </html>
