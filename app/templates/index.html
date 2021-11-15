@@ -85,11 +85,19 @@
                             body: {
                                 width: 800, rows: [
                                     {
-                                        view: "button", value: "!TEST! 플라스크 세션 제거", autowidth: true,
+                                        view: "button", value: "!TEST! 플라스크 세션 제거", autowidth: true, align: "center",
                                         click: () => {
                                             webix.ajax().del("/signout")
                                             .then((res) => { alert("session clear"); })
                                             .fail(() => { alert("세션 제거 문제 발생"); });
+                                        }
+                                    },
+                                    {
+                                        view: "button", value: "!TEST! create cash transaction cred-def", width: 200, align: "center",
+                                        click: () => {
+                                            webix.ajax().post("/create-cred-def/cash-transaction")
+                                                .then((res) => { location.reload(); })
+                                                .fail(() => { alert("credential-definition 생성 및 등록 문제 발생"); });
                                         }
                                     },
                                     {

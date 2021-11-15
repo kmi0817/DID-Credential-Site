@@ -74,7 +74,7 @@ def signout() :
         with requests.delete(f'http://0.0.0.0:8021/connections/{conn_id}') as del_res :
             print(del_res.json())
     return 'OK'
-    
+
 @app.route('/tutorials')
 def tutorials() :
     login = False
@@ -101,36 +101,39 @@ def credential() :
 
 @app.route('/credential-process', methods=['POST'])
 def credential_process() :
-    cred_attrs = request.get_json(force=True) # 대표자가 전송한 증명서 관련 데이터
-    cred_def_id = cred_attrs['credential_definition_id'] # cred_def_id 가져오기
-    del(cred_attrs['credential_definition_id']) # cred_attrs에서 cred_def_id 제거
-    cred_attrs['timestamp'] = str(int(time())) # cred_attrs에 timestamp 추가
-    conn_id = session['connection']['conn_id'] # connectino id 가져오기
+    if 'login' in session :
+        cred_attrs = request.get_json(force=True) # 대표자가 전송한 증명서 관련 데이터
+        cred_def_id = cred_attrs['credential_definition_id'] # cred_def_id 가져오기
+        del(cred_attrs['credential_definition_id']) # cred_attrs에서 cred_def_id 제거
+        cred_attrs['timestamp'] = str(int(time())) # cred_attrs에 timestamp 추가
+        conn_id = session['connection']['conn_id'] # connectino id 가져오기
 
-    offer_request_body = {
-        "connection_id": conn_id,
-        "comment": f"Offer on cred def id {cred_def_id}",
-        "auto_remove": "false",
-        "credential_preview": {
-            "@type": "https://didcomm.org/issue-credential/2.0/credential-preview",
-            "attributes": [
-                {"name": n, "value": v}
-                for (n, v) in cred_attrs.items()
-            ]
-        },
-        "filter": {"indy": {"cred_def_id": cred_def_id}},
-        "trace": "false"
-    }
+        offer_request_body = {
+            "connection_id": conn_id,
+            "comment": f"Offer on cred def id {cred_def_id}",
+            "auto_remove": "false",
+            "credential_preview": {
+                "@type": "https://didcomm.org/issue-credential/2.0/credential-preview",
+                "attributes": [
+                    {"name": n, "value": v}
+                    for (n, v) in cred_attrs.items()
+                ]
+            },
+            "filter": {"indy": {"cred_def_id": cred_def_id}},
+            "trace": "false"
+        }
 
-    with requests.post('http://0.0.0.0:8021/issue-credential-2.0/send-offer', json=offer_request_body) as offer_res :
-        result = offer_res.json()
-        cred_ex_id = result['cred_ex_id']
+        with requests.post('http://0.0.0.0:8021/issue-credential-2.0/send-offer', json=offer_request_body) as offer_res :
+            result = offer_res.json()
+            cred_ex_id = result['cred_ex_id']
 
-        credential_file = os.path.join(path, 'credential_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
-        with open(credential_file, 'w') as f :
-            f.write(str(result).replace("'", '"'))
+            credential_file = os.path.join(path, 'credential_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
+            with open(credential_file, 'w') as f :
+                f.write(str(result).replace("'", '"'))
 
-    return cred_ex_id
+        return cred_ex_id
+    else :
+        return 'FAIL'
 
 @app.route('/credential/<cred_ex_id>')
 def credential_cred_ex_id(cred_ex_id) :
@@ -160,48 +163,31 @@ def chatting() :
 ## 발급기관(faber)와 플라스크 서버(alice) 간 연결 ##
 @app.route('/create-connection', methods=['POST'])
 def create_connection() :
-    login = False
     if 'login' in session :
-        login = True
+        with requests.post("http://0.0.0.0:8021/connections/create-invitation") as create_res :
+            print("faber: create-invitation OK")
+            invitation = create_res.json()['invitation'] # invitation 부분만 꺼내오기
+            conn_id = create_res.json()['connection_id'] # connection id만 꺼내오기
 
-    with requests.post("http://0.0.0.0:8021/connections/create-invitation") as create_res :
-        print("faber: create-invitation OK")
-        invitation = create_res.json()['invitation'] # invitation 부분만 꺼내오기
-        conn_id = create_res.json()['connection_id'] # connection id만 꺼내오기
+            with requests.post("http://0.0.0.0:8031/connections/receive-invitation", json=invitation) as receive_res :
+                my_did = receive_res.json()['my_did']
 
-        with requests.post("http://0.0.0.0:8031/connections/receive-invitation", json=invitation) as receive_res :
-            my_did = receive_res.json()['my_did']
-
-    ret = {
-        "conn_id": conn_id,
-        "my_did": my_did
-    }
-    session['connection'] = ret
-    return ret
+        ret = {
+            "conn_id": conn_id,
+            "my_did": my_did
+        }
+        session['connection'] = ret
+        return ret
+    else :
+        return 'FAIL'
 
 @app.route('/session-pop', methods=['POST'])
 def session_pop() :
     session.clear()
     return 'session pop'
 
-@app.route('/delete-connection', methods=['DELETE'])
-def delete_connection() :
-    login = False
-    if 'login' in session :
-        login = True
-
-    conn_id = session['connection']['conn_id']
-    with requests.delete(f'http://0.0.0.0:8021/connections/{conn_id}') as delete_res :
-        ret = delete_res.json()
-        session.pop('connection', None)
-    return ret
-
 @app.route('/create-cred-def/<type>', methods=['POST'])
 def created_cred_def(type) :
-    login = False
-    if 'login' in session :
-        login = True
-
     # type : 등록할 증명서 양식 종류 1) 현금거래 (cash transaction), 2) 부동산거래? 3)...
     if type == 'cash-transaction' :
         schema_body = {
@@ -228,53 +214,52 @@ def created_cred_def(type) :
 
 @app.route('/credential-to-datatable', methods=['POST'])
 def credential_to_datatable() :
-    login = False
     if 'login' in session :
-        login = True
+        credential = request.get_json(force=True)
+        created_at = credential['created_at']
+        cred_ex_id = credential['cred_ex_id']
 
-    credential = request.get_json(force=True)
-    created_at = credential['created_at']
-    cred_ex_id = credential['cred_ex_id']
+        cred_proposal = credential['cred_proposal']
+        cred_proposal_id = cred_proposal['@id']
+        cred_proposal_type = cred_proposal['@type']
 
-    cred_proposal = credential['cred_proposal']
-    cred_proposal_id = cred_proposal['@id']
-    cred_proposal_type = cred_proposal['@type']
+        attributes = cred_proposal['credential_preview']['attributes']
 
-    attributes = cred_proposal['credential_preview']['attributes']
+        datatable_data = [
+            {
+                "id": 1,
+                "key": "created_at",
+                "value": created_at
+            },
+            {
+                "id": 2,
+                "key": "cred_ex_id",
+                "value": cred_ex_id
+            },
+            {
+                "id": 3,
+                "key": "cred_proposal_id",
+                "value": cred_proposal_id
+            },
+            {
+                "id": 4,
+                "key": "cred_proposal_type",
+                "value": cred_proposal_type
+            }
+        ]
 
-    datatable_data = [
-        {
-            "id": 1,
-            "key": "created_at",
-            "value": created_at
-        },
-        {
-            "id": 2,
-            "key": "cred_ex_id",
-            "value": cred_ex_id
-        },
-        {
-            "id": 3,
-            "key": "cred_proposal_id",
-            "value": cred_proposal_id
-        },
-        {
-            "id": 4,
-            "key": "cred_proposal_type",
-            "value": cred_proposal_type
-        }
-    ]
+        id = 5
+        for attr in  attributes :
+            datatable_data.append({"id": id, "key": attr["name"], "value": attr["value"]})
+            id = id + 1
 
-    id = 5
-    for attr in  attributes :
-        datatable_data.append({"id": id, "key": attr["name"], "value": attr["value"]})
-        id = id + 1
-
-    session['cred_ex_id'] = cred_ex_id
-    datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
-    with open(datatable_file, 'w') as f :
-        f.write(str(datatable_data).replace("'", '"'))
-    return 'OK'
+        session['cred_ex_id'] = cred_ex_id
+        datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
+        with open(datatable_file, 'w') as f :
+            f.write(str(datatable_data).replace("'", '"'))
+        return 'OK'
+    else :
+        return 'FAIL'
 
 @app.route('/credential-download')
 def credential_download() :
@@ -291,11 +276,10 @@ def credential_download() :
 
 @app.route('/datatable-data/<cred_ex_id>')
 def datatable_data(cred_ex_id) :
-    login = False
     if 'login' in session :
-        login = True
-
-    datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
-    with open(datatable_file, 'r') as f :
-        data = f.read()
-    return data
+        datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
+        with open(datatable_file, 'r') as f :
+            data = f.read()
+        return data
+    else :
+        return 'FAIL'
