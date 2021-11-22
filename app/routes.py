@@ -101,7 +101,8 @@ def credential() :
     if 'connection' in session :
         conn = True
         with requests.get('http://0.0.0.0:8021/credential-definitions/created') as cred_def_res :
-            cred_def_ids = cred_def_res.json()['credential_definition_ids']
+            cred_def_ids = cred_def_res.json()['credential_definition_ids'] # 리스트
+            cred_def_ids = set(cred_def_ids) # 집합으로 (중복제거)
             # print(cred_def_ids)
     
     return render_template('credential.html', login=login, connection=conn, credential_definition_ids=cred_def_ids)
