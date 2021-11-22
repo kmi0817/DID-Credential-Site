@@ -10,6 +10,11 @@ class User(db.Model) :
     def __repr__(self) :
         return f'{self.name}({self.id})'
 
+class Credential(db.Model) :
+    user_id = db.Column(db.String(30), db.ForeignKey('user.id', onupdate='CASCADE'), primary_key=True)
+    cred_ex_id = db.Column(db.String, primary_key=True)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
 # 채팅 정보
 class Chatinfo(db.Model) :
     chat_no = db.Column(db.Integer, primary_key=True) # 채팅방 번호(auto_increment)
@@ -30,3 +35,10 @@ class Chat(db.Model) :
 
     def __repr__(self) :
         return f'{self.message_owner} sent message({self.message_no})'
+
+# 임시용 채팅 기록 데이터베이스
+class History2(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True)
+    name = db.Column('name', db.String, nullable=True, default="System")
+    message = db.Column('message', db.String)
+    #timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

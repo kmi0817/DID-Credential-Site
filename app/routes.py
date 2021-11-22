@@ -1,10 +1,10 @@
-from app import app, db
+from app import app, db, socketio
 from time import time
 from flask import render_template, redirect, url_for, session, request, json, jsonify
 import requests
 import os
 from ast import literal_eval # 보안 상의 이유로 eval 대신 더 안전한 literal_eval 사용
-from app.models import User, Chatinfo, Chat
+from app.models import User, Credential, Chatinfo, Chat, History2
 
 curr_path = os.getcwd() # 현재 working directory 경로 가져오기
 path = os.path.join(curr_path, 'app', 'static') # 경로 병합해 새 경로 생성
@@ -47,6 +47,7 @@ def singin() :
         if member and member.password == password :
             # User 테이블에 존재하면서 비밀번호와 이름이 일치함
             session['login'] = member.id
+            creddef_res = created_cred_def('cash-transaction') # credential-definition 생성
             return 'OK'
         else : # 그 외 (비회원이거나 비밀번호가 일치하지 않음)
             return 'FAIL'
@@ -160,8 +161,22 @@ def chatting() :
     login = False
     if 'login' in session :
         login = True
+    messages = History2.query.all()
+    return render_template('chat.html', login=login, message=messages)
 
-    return render_template('chat.html', login=login)
+
+@socketio.on('my event')
+def handle_my_custom_event(msg, methods=['GET', 'POST']):
+    name = msg.get('name')
+    message = msg.get('message')
+    insertMessage = History2(name=name, message=message)
+    db.session.add(insertMessage)
+    db.session.commit()
+    socketio.emit('my response', msg)
+
+@socketio.on('connect_inter')
+def handle_my_custom_event2(msg, methods=['GET', 'POST']):
+    socketio.emit('my response', msg)
 
 
 
@@ -191,32 +206,6 @@ def create_connection() :
 def session_pop() :
     session.clear()
     return 'session pop'
-
-@app.route('/create-cred-def/<type>', methods=['POST'])
-def created_cred_def(type) :
-    # type : 등록할 증명서 양식 종류 1) 현금거래 (cash transaction), 2) 부동산거래? 3)...
-    if type == 'cash-transaction' :
-        schema_body = {
-            "schema_name": "cash transaction schema",
-            "schema_version": "32.21.70",
-            "attributes": ["creditor", "debtor", "amount","debt_term",
-            "CapstoneCredential_no","approved_date", "timestamp"]
-        }
-        with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
-            schema_id = schema_res.json()['schema_id']
-
-        credential_definition_body = {
-            "schema_id": schema_id,
-            "support_revocation": False,
-            "revocation_registry_size": 100,
-        }
-        with requests.post('http://0.0.0.0:8021/credential-definitions', json=credential_definition_body) as creddef_res :
-            creddef_id = creddef_res.json()['credential_definition_id']
-        
-    elif type == '부동산...' :
-        print('제작 예정')
-
-    return creddef_res.json()
 
 @app.route('/credential-to-datatable', methods=['POST'])
 def credential_to_datatable() :
@@ -289,3 +278,30 @@ def datatable_data(cred_ex_id) :
         return data
     else :
         return 'FAIL'
+
+
+# 증명서 양식 제작 함수
+def created_cred_def(type) :
+    # type : 등록할 증명서 양식 종류 1) 현금거래 (cash transaction), 2) 부동산거래? 3)...
+    if type == 'cash-transaction' :
+        schema_body = {
+            "schema_name": "cash transaction schema",
+            "schema_version": "32.21.70",
+            "attributes": ["creditor", "debtor", "amount","debt_term",
+            "CapstoneCredential_no","approved_date", "timestamp"]
+        }
+        with requests.post('http://0.0.0.0:8021/schemas', json=schema_body) as schema_res :
+            schema_id = schema_res.json()['schema_id']
+
+        credential_definition_body = {
+            "schema_id": schema_id,
+            "support_revocation": False,
+            "revocation_registry_size": 100,
+        }
+        with requests.post('http://0.0.0.0:8021/credential-definitions', json=credential_definition_body) as creddef_res :
+            creddef_id = creddef_res.json()['credential_definition_id']
+        
+    elif type == '부동산...' :
+        print('제작 예정')
+
+    return creddef_res.json()
