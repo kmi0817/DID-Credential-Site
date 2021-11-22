@@ -121,6 +121,7 @@ def credential_process() :
         cred_attrs = request.get_json(force=True) # 대표자가 전송한 증명서 관련 데이터
         cred_def_id = cred_attrs['credential_definition_id'] # cred_def_id 가져오기
         del(cred_attrs['credential_definition_id']) # cred_attrs에서 cred_def_id 제거
+        cred_attrs['CapstoneCredential_no'] = '2sfuo120dls219013dsfs28' # cred_attrs에 발급기관ID(넘버) 추가
         cred_attrs['timestamp'] = str(int(time())) # cred_attrs에 timestamp 추가
         conn_id = session['connection']['conn_id'] # connectino id 가져오기
 
