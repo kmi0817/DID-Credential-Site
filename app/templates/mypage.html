@@ -113,14 +113,6 @@
                                                         view: "button", value: "회원 탈퇴", width: 200, height: 50,
                                                         click: () => { alert("회원 탈퇴"); }
                                                     },
-                                                    {
-                                                        view: "button", value: "!TEST! 플라스크 세션 제거", autowidth: true, align: "center",
-                                                        click: () => {
-                                                            webix.ajax().del("/signout")
-                                                                .then((res) => { alert("session clear"); })
-                                                                .fail(() => { alert("세션 제거 문제 발생"); });
-                                                        }
-                                                    },
                                                 ]
                                             },
                                             {
@@ -172,9 +164,9 @@
                                                             view: "spacer", height: 20
                                                         },
                                                         {
-                                                            view: "list",
+                                                            view: "list", id: "id_list",
                                                             // label: "발급받은 증명서 목록", labelPosition: "top",
-                                                            template: "#id#",
+                                                            template: "#id#", select: true,
                                                             height: "300", scroll: "y",
                                                             data: [
                                                                 {% for cred_ex_id in cred_ex_ids %}
@@ -200,6 +192,9 @@
                 }
             });
 
+            $$("id_list").attachEvent("onItemClick", (id, e, node) => {
+                location.href=`/credential/${id}`;
+            });
         });
     </script>
     {% else %}
