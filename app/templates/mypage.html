@@ -172,8 +172,15 @@
                                                             view: "spacer", height: 20
                                                         },
                                                         {
-                                                            view: "textarea", label: "개인정보", labelPosition: "top",
-                                                            height: "300", scroll: "y"
+                                                            view: "list",
+                                                            // label: "발급받은 증명서 목록", labelPosition: "top",
+                                                            template: "#id#",
+                                                            height: "300", scroll: "y",
+                                                            data: [
+                                                                {% for cred_ex_id in cred_ex_ids %}
+                                                                {"id" : `{{cred_ex_id}}`},
+                                                                {% endfor %}
+                                                            ]
                                                         },
                                                         {
                                                             view: "spacer", height: 30

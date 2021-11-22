@@ -26,7 +26,14 @@ def mypage() :
 
         member = User.query.filter(User.id == id).first()
         name = member.name
-        return render_template('mypage.html', login=login, name=name, id=id)
+
+        # credential_list = session.query('cred_ex_id').filter_by(user_id = id)
+        
+        credential_list = Credential.query.filter(Credential.user_id == id).all()
+        cred_ex_ids = []
+        for credential in credential_list :
+            cred_ex_ids.append(credential.cred_ex_id)
+        return render_template('mypage.html', login=login, name=name, id=id, cred_ex_ids=cred_ex_ids)
     else :
         return render_template('mypage.html', login=login)
 
@@ -44,6 +51,7 @@ def singin() :
         password = values['password']
 
         member = User.query.filter(User.id == id).first()
+        print(member)
         if member and member.password == password :
             # User 테이블에 존재하면서 비밀번호와 이름이 일치함
             session['login'] = member.id
@@ -135,9 +143,17 @@ def credential_process() :
             result = offer_res.json()
             cred_ex_id = result['cred_ex_id']
 
+            # credential_file 폴더에 파일로 저장
             credential_file = os.path.join(path, 'credential_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
             with open(credential_file, 'w') as f :
                 f.write(str(result).replace("'", '"'))
+
+        # 값 DB에 저장
+        user_id = session['login']
+        print(f'user_id: {user_id}, id: {id}, cred_ex_id: {cred_ex_id}')
+        record = Credential(user_id=user_id, cred_ex_id=cred_ex_id)
+        db.session.add(record)
+        db.session.commit()
 
         return cred_ex_id
     else :
