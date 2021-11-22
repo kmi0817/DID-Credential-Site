@@ -113,6 +113,14 @@
                                                         view: "button", value: "회원 탈퇴", width: 200, height: 50,
                                                         click: () => { alert("회원 탈퇴"); }
                                                     },
+                                                    {
+                                                        view: "button", value: "!TEST! 플라스크 세션 제거", autowidth: true, align: "center",
+                                                        click: () => {
+                                                            webix.ajax().del("/signout")
+                                                                .then((res) => { alert("session clear"); })
+                                                                .fail(() => { alert("세션 제거 문제 발생"); });
+                                                        }
+                                                    },
                                                 ]
                                             },
                                             {
