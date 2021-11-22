@@ -133,6 +133,7 @@
                                                         var values = form.getValues();
                                                         webix.ajax().post("/signin", JSON.stringify(values))
                                                         .then((res) => {
+                                                            webix.message({type:"debug", text: "로그인 과정이 오래 걸릴 수 있습니다. 잠시만 기다려주세요."});
                                                             var response = res.text();
                                                             if (response === "OK") {
                                                                 location.href="/";
