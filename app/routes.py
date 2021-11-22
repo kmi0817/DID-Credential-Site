@@ -82,13 +82,13 @@ def signout() :
             print(del_res.json())
     return 'OK'
 
-@app.route('/tutorials')
-def tutorials() :
+@app.route('/document')
+def document() :
     login = False
     if 'login' in session :
         login = True
 
-    return render_template('tutorial.html', login=login)
+    return render_template('document.html', login=login)
 
 @app.route('/credential')
 def credential() :
