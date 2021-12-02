@@ -185,6 +185,7 @@ def chatting() :
 
 @socketio.on('my event')
 def handle_my_custom_event(msg, methods=['GET', 'POST']):
+    print(msg)
     name = msg.get('name')
     message = msg.get('message')
     insertMessage = History2(name=name, message=message)

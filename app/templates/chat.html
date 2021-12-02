@@ -454,6 +454,7 @@ input:focus {
 
       //받기
       socket.on( 'my response', function( msg ) {
+        console.log(msg);
         if( typeof msg.name !== 'undefined' ) {
           $( 'div.message_holder' ).append( '<div class="chat_contents"><div class="chatName"><b style="color: #000">'+msg.name
             +'</b></div><div class="chatMessage"><small>'+msg.message+'</small></div></div>' )
