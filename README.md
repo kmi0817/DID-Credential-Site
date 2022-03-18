@@ -32,7 +32,7 @@ flask run # or python3 run.py
 
 ## 5. How to issue a credential? 🤔
 
-    1) Login First, if you want to issue a credentail
+    1) Login First, if you want to issue a credential
     2) ...
 
 ## 6. How it works 🙋
