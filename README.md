@@ -11,10 +11,18 @@
 
 ## 2. Flask Setting
 
+- Mac
 ```
 pip3 install flask
 pip3 install requests
 pip3 install flask_sqlalchemy
+```
+
+- Windows
+```
+pip install flask
+pip install requests
+pip install flask_sqlalchemy
 ```
 
 ## 3. How to run?
