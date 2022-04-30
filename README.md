@@ -48,7 +48,11 @@ flask run # or python3 run.py
 
 ## 6. How it works 🙋
 
-    1) 2 Docker Servers
+    0) 2 Docker Servers
         - Alice: client
         - Faber: issuer
-    2) ....
+    1) Alice is connected with Faber when a client enters 'Issue Credential' menu.
+        The process of connection:
+            Faber Sends Invitation
+            Alice receive the Invitation
+    3) ...
