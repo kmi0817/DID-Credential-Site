@@ -41,7 +41,10 @@ flask run # or python3 run.py
 ## 5. How to issue a credential? 🤔
 
     1) Login First, if you want to issue a credential
-    2) ...
+    2) Move to 'Issue Credential' menu
+    3) Select credential-definition that you want: form_cashTransaction
+    4) Enter information: creditor, debtor, amount, debt_term, approved_date
+    5) Click 'Submit' then you can have your own credential with CapstoneCredential_no
 
 ## 6. How it works 🙋
 
