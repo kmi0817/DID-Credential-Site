@@ -4,7 +4,7 @@
 
 | Type       | Language           |
 | ---------- | ------------------ |
-| **DID**    | hyperledger fabric |
+| **DID**    | hyperledger indy   |
 | **Server** | Flask              |
 | Client     | Webix, JavaScript  |
 | Data       | SQLAlchemy, JSON   |
