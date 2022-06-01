@@ -36,7 +36,13 @@ flask run # or python3 run.py
 ## 4. Project Info
 
 ✔ Capstone Project from the University
-✔ 2 members (including me) worked together
+
+- Team
+
+| Name   | Do                 |
+| ------ | ------------------ |
+| **Me** | Issuing credentials|
+| Friend | Chatting           |
 
 ## 5. How to issue a credential? 🤔
 
