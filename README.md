@@ -54,11 +54,19 @@ flask run # or python3 run.py
 
 ## 6. How it works 🙋
 
-    0) 2 Docker Servers
+    0) 2 Docker Servers & Flask Server
         - Alice: client
         - Faber: issuer
+        - Flask Server: Medium
     1) Alice is connected with Faber when a client enters 'Issue Credential' menu.
         The process of connection:
             Faber Sends Invitation
             Alice receive the Invitation
-    3) ...
+    3) Alice enters and submits detail information that is needed for the credential.
+        The process of making credential:
+            Flask Server saves information
+            Flask Server requests of issuing credential to Faber
+            Flask Server gets credential information: Credential id, Issue date, Issuing authority number, etc.
+            Flask Server makes a PDF/PNG format of credential
+    4) Alice downloads credential.
+            
