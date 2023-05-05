@@ -61,5 +61,5 @@ flask run
 ---
 
 ## Architecture
-![DID인증이용한증명서발급](https://user-images.githubusercontent.com/62174395/236383475-8c3c5362-1e65-4e4a-b92f-757201ce92c6.svg)
+![DID인증이용한증명서발급 drawio](https://user-images.githubusercontent.com/62174395/236383720-dafb63d0-991d-444e-95b9-f4eb42391c39.svg)
 
