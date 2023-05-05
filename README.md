@@ -1,15 +1,11 @@
-# Capstone Credential 🗎
+# DID-Credential-Site 🗎
 
-## 1. Environment
+> Capstone Project from Dankook University<br>
+> ✔ My Role : `Back-end (Flask), Front-end (Webix)` except chatting
 
-| Type       | Language           |
-| ---------- | ------------------ |
-| **DID**    | hyperledger indy   |
-| **Server** | Flask              |
-| Client     | Webix, JavaScript  |
-| Data       | SQLAlchemy, JSON   |
+## How to run?
 
-## 2. Flask Setting
+### Flask Settings before run
 
 - Mac
 ```
@@ -25,26 +21,18 @@ pip install requests
 pip install flask_sqlalchemy
 ```
 
-## 3. How to run?
+### Now you can run it
 
 ```
 export FLASK_APP=app
 export FLASK_ENV=development
-flask run # or python3 run.py
+flask run
 ```
+- You can use `python3 run.py` instead of flask run
 
-## 4. Project Info
+---
 
-✔ Capstone Project from the University
-
-- Team
-
-| Name   | Do                 |
-| ------ | ------------------ |
-| **Me** | Issuing credentials|
-| Friend | Chatting           |
-
-## 5. How to issue a credential? 🤔
+## How to issue a credential? 🤔
 
     1) Login First, if you want to issue a credential
     2) Move to 'Issue Credential' menu
@@ -52,7 +40,7 @@ flask run # or python3 run.py
     4) Enter information: creditor, debtor, amount, debt_term, approved_date
     5) Click 'Submit' then you can have your own credential with CapstoneCredential_no
 
-## 6. How it works 🙋
+## How it works 🙋
 
     0) 2 Docker Servers & Flask Server
         - Alice: client
@@ -69,4 +57,9 @@ flask run # or python3 run.py
             Flask Server gets credential information: Credential id, Issue date, Issuing authority number, etc.
             Flask Server makes a PDF/PNG format of credential
     4) Alice downloads credential.
-            
+
+---
+
+## Architecture
+![DID인증이용한증명서발급](https://user-images.githubusercontent.com/62174395/236383475-8c3c5362-1e65-4e4a-b92f-757201ce92c6.svg)
+
